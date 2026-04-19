@@ -1,0 +1,53 @@
+---
+title: "GET /dishes"
+---
+
+-- put filter parameter options below instead of generic options --
+
+### Endpoint
+
+`GET /dishes`
+
+### Query Parameters
+
+**filter (string)**\
+Specify the field(s) used to filter the response.
+
+- Use the format `fieldName.operator~value` for each field. Allowed formats include:\
+  Basic Equality (eq) - For exact matches, use `fieldName.eq~value`.\
+  Less Than (lt) - Use `fieldName.lt~value`.\
+  Less Than or Equal To (lte) - Use `fieldName.lte~value`.\
+  Greater Than (gt) - Use `fieldName.gt~value`.\
+  Greater Than or Equal To (gte) - Use `fieldName.gte~value`.
+- Separate fields using the `|`delimiter.
+- Dates must use the forma`YYYY-MM-DD`.
+
+The following example filters the results by the Appetizer category:\
+`filter=category.eq~Appetizer`
+
+**fields (string)**\
+Specify the fields to return in the response. Provide a list of field names, separated by the `|` delimiter.
+
+**sort (string)**\
+Sort the response by any field. If `sort` is provided, the `order` parameter must also be provided.
+
+**order (string)**\
+Determine order that results are sorted. Valid values are `asc` (ascending) or `desc` (descending).
+
+**limit (integer)**\
+Maximum number of results to return per page.
+
+**offset (integer)**\
+Offset-based pagination filter that specifies the number of items to skip before returning results.
+
+### Response
+
+Returns ....
+
+### Sample Request
+
+x
+
+### Sample Response
+
+x

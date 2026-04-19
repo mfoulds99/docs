@@ -2,4 +2,557 @@
 title: "Patron API Flow"
 ---
 
-Description of API Flow.
+The Patron API flow describes the steps that occur when a patron (customer) places an order using the POS mobile app.
+
+In this flow, the client is the mobile app used by the patron to order from the restaurant.
+
+## 1. Select a Menu Category
+
+When the patron selects a menu category in the mobile app, the client requests a list of dishes for the selected category. The server returns an array with a list of dishes. The client stores this information for future use.
+
+<Info>
+  The client uses this data to determine the appropriate dishes for the category. The dishes are not displayed in the mobile app immediately; the client must first check if there are sufficient ingredients in-stock for each dish. For details, see "2. Check Ingredient Quantities".
+</Info>
+
+### Endpoint
+
+`GET /dishes`
+
+### Query Parameters
+
+**filter (string)**\
+Filter the results to return the dishes for a specific category. Possible category values are `Appetizers`, `Main Courses`, and `Desserts`.
+
+For example, use the following filter to return dishes for the `Appetizer` category:\
+`filter=category.eq~Appetizer`.
+
+**fields (string)**\
+Specify the fields to return in the response. Provide a list of field names, separated by the `|` delimiter.
+
+At a minimum, include the following fields in the response: `id`, `name`, `description`, `price`, `image_name`.
+
+For example:\
+`fields=id|name|description|price|image_name`
+
+### Sample Request
+
+```json
+curl -X GET "{BaseURL}?filter=category.eq~Appetizer&fields=id|name|description|price|image_name"
+```
+
+### Sample Response
+
+```json
+{
+  "results": [
+    {
+      "id": "698d4ef070b67b7e0cc0de1f",
+      "name": "Bruschetta al Pomodoro",
+      "description": "Toasted bread topped with a mixture of ripe tomatoes, garlic, basil, and olive oil.",
+      "price": 3999,
+      "image_name": "bruschetta_al_pomodoro"
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de24",
+      "name": "Arancini di Riso",
+      "description": "Crispy, golden rice balls stuffed with a cheesy filling and served with marinara sauce.",
+      "price": 3999,
+      "image_name": "arancini_di_riso"
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de27",
+      "name": "Caprese Salad",
+      "description": "A fresh salad featuring ripe tomatoes, mozzarella cheese, basil, and a drizzle of balsamic vinegar.",
+      "price": 799,
+      "image_name": "caprese_salad"
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de2e",
+      "name": "Prosciutto e Melone",
+      "description": "Thin slices of cured ham served with sweet cantaloupe melon.",
+      "price": 199,
+      "image_name": "prosciutto_e_melone"
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de34",
+      "name": "Calamari Fritti",
+      "description": "Fried squid rings served with a side of marinara sauce or lemon wedges.",
+      "price": 6999,
+      "image_name": "calamari_fritti"
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de39",
+      "name": "Carpaccio di Manzo",
+      "description": "Thinly sliced raw beef topped with arugula, Parmesan, and a drizzle of olive oil.",
+      "price": 8999,
+      "image_name": "carpaccio_di_manzo"
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de40",
+      "name": "Crostini di Fegato",
+      "description": "Toasted bread slices topped with a savory chicken liver pâté.",
+      "price": 699,
+      "image_name": "crostini_di_fegato"
+    }
+  ],
+  "total_results": 7
+}
+```
+
+## 2. Check Ingredient Quantities
+
+Check the quantity of ingredients that are currently in-stock. The server returns an array with a list of all ingredients and their quantities.
+
+The client uses this information to determine if there are sufficient ingredients for the dishes  before displaying them in the mobile app. Only dishes with essential ingredients greater than zero are displayed and can be selected by the patron.
+
+### Endpoint
+
+`GET /ingredients`
+
+### Query Parameters
+
+**fields (string)**\
+Specify the fields to return in the response. Provide a list of field names, separated by the `|` delimiter. At a minimum, include the `name` and `in_stock_qty` parameters.
+
+For example:\
+`fields=name|in_stock_qty`
+
+### Sample Request
+
+```json
+curl -X GET "{BaseURL}/ingredients?fields=name|in_stock_qty"
+```
+
+### Sample Response
+
+```json
+{
+  "results": [
+    {
+      "id": "698d4ef070b67b7e0cc0dde9",
+      "name": "Ground Beef",
+      "in_stock_qty": 51
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0ddea",
+      "name": "Parmesan Cheese",
+      "in_stock_qty": 15
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0ddeb",
+      "name": "Ricotta Cheese",
+      "in_stock_qty": 34
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0ddec",
+      "name": "Ground Beef",
+      "in_stock_qty": 56
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0dded",
+      "name": "Thyme",
+      "in_stock_qty": 94
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0ddee",
+      "name": "Cucumber",
+      "in_stock_qty": 82
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0ddef",
+      "name": "Ground Beef",
+      "in_stock_qty": 23
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0ddf0",
+      "name": "Chicken Stock",
+      "in_stock_qty": 79
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0ddf1",
+      "name": "Basil",
+      "in_stock_qty": 58
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0ddf2",
+      "name": "Artichokes",
+      "in_stock_qty": 33
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0ddf3",
+      "name": "Prosciutto",
+      "in_stock_qty": 60
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0ddf4",
+      "name": "Rosemary",
+      "in_stock_qty": 86
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0ddf5",
+      "name": "Salami",
+      "in_stock_qty": 21
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0ddf6",
+      "name": "Balsamic Vinegar",
+      "in_stock_qty": 89
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0ddf7",
+      "name": "Butter",
+      "in_stock_qty": 11
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0ddf8",
+      "name": "Red Wine",
+      "in_stock_qty": 93
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0ddf9",
+      "name": "Dried Tomatoes",
+      "in_stock_qty": 97
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0ddfa",
+      "name": "Red Wine",
+      "in_stock_qty": 93
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0ddfb",
+      "name": "Gorgonzola Cheese",
+      "in_stock_qty": 26
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0ddfc",
+      "name": "Zucchini",
+      "in_stock_qty": 50
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0ddfd",
+      "name": "Artichokes",
+      "in_stock_qty": 10
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0ddfe",
+      "name": "Chili Flakes",
+      "in_stock_qty": 30
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0ddff",
+      "name": "Mushrooms",
+      "in_stock_qty": 6
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de00",
+      "name": "Mozzarella Cheese",
+      "in_stock_qty": 41
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de01",
+      "name": "Tomato",
+      "in_stock_qty": 95
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de02",
+      "name": "Capers",
+      "in_stock_qty": 53
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de03",
+      "name": "Spinach",
+      "in_stock_qty": 13
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de04",
+      "name": "Cucumber",
+      "in_stock_qty": 33
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de05",
+      "name": "Ricotta Cheese",
+      "in_stock_qty": 63
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de06",
+      "name": "Red Wine",
+      "in_stock_qty": 51
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de07",
+      "name": "Seafood Mix",
+      "in_stock_qty": 65
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de08",
+      "name": "Ground Beef",
+      "in_stock_qty": 83
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de09",
+      "name": "Parmesan Cheese",
+      "in_stock_qty": 82
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de0a",
+      "name": "Chili Flakes",
+      "in_stock_qty": 7
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de0b",
+      "name": "Gorgonzola Cheese",
+      "in_stock_qty": 94
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de0c",
+      "name": "Bell Peppers",
+      "in_stock_qty": 21
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de0d",
+      "name": "Saffron",
+      "in_stock_qty": 65
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de0e",
+      "name": "Oregano",
+      "in_stock_qty": 44
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de0f",
+      "name": "Chicken Breast",
+      "in_stock_qty": 80
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de10",
+      "name": "Chicken Stock",
+      "in_stock_qty": 81
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de11",
+      "name": "Fennel Seeds",
+      "in_stock_qty": 67
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de12",
+      "name": "Ricotta Cheese",
+      "in_stock_qty": 50
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de13",
+      "name": "Saffron",
+      "in_stock_qty": 82
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de14",
+      "name": "Pasta",
+      "in_stock_qty": 37
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de15",
+      "name": "Gorgonzola Cheese",
+      "in_stock_qty": 45
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de16",
+      "name": "Chicken Breast",
+      "in_stock_qty": 29
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de17",
+      "name": "Thyme",
+      "in_stock_qty": 47
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de18",
+      "name": "Butter",
+      "in_stock_qty": 54
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de19",
+      "name": "Cream",
+      "in_stock_qty": 73
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de1a",
+      "name": "Saffron",
+      "in_stock_qty": 15
+    },
+    {
+      "id": "69934c68382d04dc3bb2a823",
+      "name": "Bun",
+      "in_stock_qty": 300
+    },
+    {
+      "id": "69934c77382d04dc3bb2a827",
+      "name": "Veggie Patty",
+      "in_stock_qty": 43
+    },
+    {
+      "id": "69934c88382d04dc3bb2a82b",
+      "name": "Lettuce",
+      "in_stock_qty": 400
+    },
+    {
+      "id": "69934c98382d04dc3bb2a82f",
+      "name": "Onion",
+      "in_stock_qty": 120
+    },
+    {
+      "id": "69935173382d04dc3bb2a840",
+      "name": "Celery",
+      "in_stock_qty": 3
+    },
+    {
+      "id": "699ba99010a85602349785d0",
+      "name": "Wild Boar",
+      "in_stock_qty": 3
+    },
+    {
+      "id": "699ba9cc10a85602349785d4",
+      "name": "Juniper Berries",
+      "in_stock_qty": 15
+    },
+    {
+      "id": "699ba9f610a85602349785d8",
+      "name": "Sage",
+      "in_stock_qty": 20
+    },
+    {
+      "id": "699babc110a85602349785f4",
+      "name": "Sardines",
+      "in_stock_qty": 200
+    },
+    {
+      "id": "699babf610a85602349785f8",
+      "name": "Fennel pollen",
+      "in_stock_qty": 500
+    },
+    {
+      "id": "699bac0e10a85602349785fc",
+      "name": "Pine nuts",
+      "in_stock_qty": 1000
+    },
+    {
+      "id": "69c069de5459af56670fe3fa",
+      "name": "Trofie Pasta",
+      "in_stock_qty": 50
+    },
+    {
+      "id": "69c06a5e5459af56670fe404",
+      "name": "Green Beans\t",
+      "in_stock_qty": 30
+    },
+    {
+      "id": "69c06a715459af56670fe40e",
+      "name": "Potatoes",
+      "in_stock_qty": 100
+    }
+  ],
+  "total_results": 64
+}
+```
+
+## 3. View Dish Details
+
+View details of the dish selected by the patron. The server returns an array with a list of dishes and their details, such the the dish ID, name, price, and ingredients.
+
+### Endpoint
+
+`GET /dishes/{id}`
+
+### Path Parameters
+
+**id (string)**
+
+Unique ID for the dish.
+
+### Sample Request
+
+```json
+curl -X GET "{BaseURL}/dishes/698d4ef070b67b7e0cc0de24"
+```
+
+### Sample Response
+
+```json
+{
+  "id": "698d4ef070b67b7e0cc0de24",
+  "created_at": "2025-09-27T03:37:47.785Z",
+  "updated_at": "2026-02-12T01:45:28.697Z",
+  "name": "Arancini di Riso",
+  "description": "Crispy, golden rice balls stuffed with a cheesy filling and served with marinara sauce.",
+  "category": "Appetizer",
+  "price": 3999,
+  "preparation_time": 20,
+  "image_name": "arancini_di_riso",
+  "station": "hot",
+  "ingredients": [
+    {
+      "ingredient_id": "698d4ef070b67b7e0cc0de10",
+      "is_essential": false,
+      "_id": "698d4ef070b67b7e0cc0de25"
+    },
+    {
+      "ingredient_id": "698d4ef070b67b7e0cc0ddeb",
+      "is_essential": false,
+      "_id": "698d4ef070b67b7e0cc0de26"
+    }
+  ]
+}
+```
+
+## 4. Add Dishes and View Cart
+
+In the mobile app, the patron selects the dish they wish to order and adds the dish to their cart. The patron can add multiple dishes to their cart. This information is stored by the client for future use.
+
+## 5. Place Order
+
+In the mobile app, the patron clicks the "Order Now" button to place their order. The client requests a new order and sends information for the dishes in the patron's cart in the request body. The server creates a new order and returns the order details, including a unique ID for the order, the order status, and the order priority.
+
+### Endpoint
+
+`POST /orders`
+
+### Request Body Parameters
+
+**name (string) Required**\
+Patron's name.
+
+**table\_number (integer)**\
+Patron's table number.
+
+**dish\_ids (array of strings) Required**\
+Array of the dish IDs in the order.
+
+**special\_requests (string)**\
+Any requests or instructions from the patron.
+
+### Sample Request
+
+```json
+curl -H "Accept: application/json" -H "Authorization: Bearer 4840de21-ed92-44d9-8571-fac25e81c209" -X POST "{BaseURL}/orders" -H "Content-Type: application/json" -d '{"name": "James", "table_number": 10, "dish_ids": ["698d4ef070b67b7e0cc0de94", "698d4ef070b67b7e0cc0de24"], "special_requests": "no onions"}'
+```
+
+### Sample Response
+
+```json
+{
+    "id": "69e525703825068c518b54a3",
+    "created_at": "2026-04-19T18:56:48.518Z",
+    "updated_at": "2026-04-19T18:56:48.518Z",
+    "scheduled_at": null,
+    "table_number": 10,
+    "status": "Received",
+    "priority": 3,
+    "dish_ids": [
+        "698d4ef070b67b7e0cc0de94",
+        "698d4ef070b67b7e0cc0de24"
+    ],
+    "special_requests": "No onions"
+}
+```
+
+## 6. Order Confirmation
+
+The patron receives an order confirmation message in the mobile app, confirming that their order has been received.

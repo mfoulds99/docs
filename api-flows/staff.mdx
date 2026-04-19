@@ -1,3 +1,547 @@
 ---
 title: "Staff API Flow"
 ---
+
+The Staff API flow describes the steps that occur when kitchen staff receive an order placed by a patron.
+
+In this flow, the client is the expeditor KDS app used by kitchen staff.
+
+## Order Display
+
+View a list of new orders placed on the current day. The server returns a list of all new orders in the system, which are then displayed in the KDS app.
+
+### Endpoint
+
+`GET /orders`
+
+### Query Parameters
+
+**filter (string)**\
+Filter the results to only view orders with a `status` of `Received` and where the `created_at` date is the current date.
+
+For example:\
+`filter=status.eq~Received|created_at.gte2025-01-01`
+
+### Sample Request
+
+```json
+curl -X GET "{BaseURL}/orders?filter=status.eq~Received|created_at.gte2025-01-01"
+```
+
+### Sample Response
+
+```json
+{
+  "results": [
+    {
+      "id": "698d4ef070b67b7e0cc0dec5",
+      "name": "Laura",
+      "table_number": null,
+      "status": "Received",
+      "priority": 2,
+      "dish_ids": [
+        "698d4ef070b67b7e0cc0de94",
+        "698d4ef070b67b7e0cc0dea2",
+        "698d4ef070b67b7e0cc0de34",
+        "698d4ef070b67b7e0cc0deb6",
+        "698d4ef070b67b7e0cc0de8f"
+      ],
+      "special_requests": "Cribro caritas defaeco crebro sol.",
+      "created_at": "2025-03-29T07:49:10.941Z",
+      "updated_at": "2026-02-11T07:15:18.370Z",
+      "scheduled_at": "2026-09-24T06:15:29.533Z"
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0dec9",
+      "name": "Liliana",
+      "table_number": 5,
+      "status": "Received",
+      "priority": 1,
+      "dish_ids": [
+        "698d4ef070b67b7e0cc0de39",
+        "698d4ef070b67b7e0cc0de4b",
+        "698d4ef070b67b7e0cc0de63",
+        "698d4ef070b67b7e0cc0de60",
+        "698d4ef070b67b7e0cc0de84",
+        "698d4ef070b67b7e0cc0deb0"
+      ],
+      "special_requests": "Qui aeger paens aeneus.",
+      "created_at": "2026-01-15T09:00:50.431Z",
+      "updated_at": "2026-02-11T12:37:50.077Z",
+      "scheduled_at": "2026-03-24T00:51:04.457Z"
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0deca",
+      "name": "Griffin",
+      "table_number": null,
+      "status": "Received",
+      "priority": 2,
+      "dish_ids": ["698d4ef070b67b7e0cc0de94", "698d4ef070b67b7e0cc0de34"],
+      "special_requests": null,
+      "created_at": "2025-09-25T09:59:41.277Z",
+      "updated_at": "2026-02-11T05:54:24.842Z",
+      "scheduled_at": null
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0decc",
+      "name": "Reymundo",
+      "table_number": null,
+      "status": "Received",
+      "priority": 3,
+      "dish_ids": [
+        "698d4ef070b67b7e0cc0de9c",
+        "698d4ef070b67b7e0cc0de44",
+        "698d4ef070b67b7e0cc0de7a",
+        "698d4ef070b67b7e0cc0de27"
+      ],
+      "special_requests": "Ustulo cervus aggredior colligo sopor tandem.",
+      "created_at": "2025-03-10T19:10:19.735Z",
+      "updated_at": "2026-02-11T23:10:42.816Z",
+      "scheduled_at": null
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0ded1",
+      "name": "Marcus",
+      "table_number": null,
+      "status": "Received",
+      "priority": 5,
+      "dish_ids": [
+        "698d4ef070b67b7e0cc0de40",
+        "698d4ef070b67b7e0cc0de75",
+        "698d4ef070b67b7e0cc0de6f",
+        "698d4ef070b67b7e0cc0de4b",
+        "698d4ef070b67b7e0cc0deb0",
+        "698d4ef070b67b7e0cc0dea8"
+      ],
+      "special_requests": "Veniam tener cattus consequuntur.",
+      "created_at": "2026-01-19T10:19:18.531Z",
+      "updated_at": "2026-02-11T17:48:28.161Z",
+      "scheduled_at": null
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0ded4",
+      "name": "Marley",
+      "table_number": 3,
+      "status": "Received",
+      "priority": 2,
+      "dish_ids": [
+        "698d4ef070b67b7e0cc0de5b",
+        "698d4ef070b67b7e0cc0de6f",
+        "698d4ef070b67b7e0cc0de88",
+        "698d4ef070b67b7e0cc0dea8",
+        "698d4ef070b67b7e0cc0de39"
+      ],
+      "special_requests": "Terminatio civitas agnitio tamen tredecim arto cinis cado voluptatem adopto.",
+      "created_at": "2026-01-02T05:21:26.096Z",
+      "updated_at": "2026-02-11T13:55:54.014Z",
+      "scheduled_at": "2026-03-25T04:47:34.217Z"
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0dede",
+      "name": "Darien",
+      "table_number": null,
+      "status": "Received",
+      "priority": 2,
+      "dish_ids": [
+        "698d4ef070b67b7e0cc0de6a",
+        "698d4ef070b67b7e0cc0de98",
+        "698d4ef070b67b7e0cc0de75",
+        "698d4ef070b67b7e0cc0de88"
+      ],
+      "special_requests": null,
+      "created_at": "2025-08-22T19:32:17.917Z",
+      "updated_at": "2026-02-12T01:38:44.164Z",
+      "scheduled_at": "2026-11-09T12:38:56.793Z"
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0dedf",
+      "name": "Tremaine",
+      "table_number": 8,
+      "status": "Received",
+      "priority": 4,
+      "dish_ids": [
+        "698d4ef070b67b7e0cc0de60",
+        "698d4ef070b67b7e0cc0dea8",
+        "698d4ef070b67b7e0cc0de55",
+        "698d4ef070b67b7e0cc0de6a"
+      ],
+      "special_requests": null,
+      "created_at": "2025-06-01T07:49:02.252Z",
+      "updated_at": "2026-02-11T08:43:53.912Z",
+      "scheduled_at": "2026-09-22T07:55:42.828Z"
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0dee5",
+      "name": "Leatha",
+      "table_number": null,
+      "status": "Received",
+      "priority": 5,
+      "dish_ids": [
+        "698d4ef070b67b7e0cc0de27",
+        "698d4ef070b67b7e0cc0de55",
+        "698d4ef070b67b7e0cc0de7d"
+      ],
+      "special_requests": null,
+      "created_at": "2025-07-15T20:26:25.125Z",
+      "updated_at": "2026-02-12T02:22:58.311Z",
+      "scheduled_at": null
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0dee7",
+      "name": "Lincoln",
+      "table_number": 28,
+      "status": "Received",
+      "priority": 2,
+      "dish_ids": [
+        "698d4ef070b67b7e0cc0deab",
+        "698d4ef070b67b7e0cc0de63",
+        "698d4ef070b67b7e0cc0de1f",
+        "698d4ef070b67b7e0cc0de6f"
+      ],
+      "special_requests": null,
+      "created_at": "2025-03-08T10:38:33.143Z",
+      "updated_at": "2026-02-11T15:23:22.638Z",
+      "scheduled_at": null
+    },
+    {
+      "id": "69935245382d04dc3bb2a84b",
+      "name": "Benjamin",
+      "table_number": 18,
+      "status": "Received",
+      "priority": 3,
+      "dish_ids": ["699351af382d04dc3bb2a845"],
+      "special_requests": "No peanuts",
+      "created_at": "2026-02-16T17:22:13.930Z",
+      "updated_at": "2026-02-16T17:22:13.930Z",
+      "scheduled_at": null
+    },
+    {
+      "id": "699bab0b10a85602349785e9",
+      "name": "Jeremy",
+      "table_number": 20,
+      "status": "Received",
+      "priority": 3,
+      "dish_ids": ["699baab510a85602349785df"],
+      "special_requests": "No peanuts.",
+      "created_at": "2026-02-23T01:19:07.150Z",
+      "updated_at": "2026-02-23T01:19:07.150Z",
+      "scheduled_at": null
+    },
+    {
+      "id": "699bacb710a856023497860d",
+      "name": "Jonathan",
+      "table_number": 25,
+      "status": "Received",
+      "priority": 3,
+      "dish_ids": ["699bac7b10a8560234978603"],
+      "special_requests": "Easy on the sardines",
+      "created_at": "2026-02-23T01:26:15.752Z",
+      "updated_at": "2026-02-23T01:26:15.752Z",
+      "scheduled_at": null
+    },
+    {
+      "id": "69e524c43825068c518b5493",
+      "name": "JamesSmith",
+      "table_number": 10,
+      "status": "Received",
+      "priority": 3,
+      "dish_ids": ["698d4ef070b67b7e0cc0de24"],
+      "special_requests": "No onions",
+      "created_at": "2026-04-19T18:53:56.200Z",
+      "updated_at": "2026-04-19T18:53:56.200Z",
+      "scheduled_at": null
+    },
+    {
+      "id": "69e524ce3825068c518b5499",
+      "name": "James",
+      "table_number": 10,
+      "status": "Received",
+      "priority": 3,
+      "dish_ids": ["698d4ef070b67b7e0cc0de24"],
+      "special_requests": "No onions",
+      "created_at": "2026-04-19T18:54:06.091Z",
+      "updated_at": "2026-04-19T18:54:06.091Z",
+      "scheduled_at": null
+    },
+    {
+      "id": "69e525703825068c518b54a3",
+      "name": "James",
+      "table_number": 10,
+      "status": "Received",
+      "priority": 3,
+      "dish_ids": ["698d4ef070b67b7e0cc0de94", "698d4ef070b67b7e0cc0de24"],
+      "special_requests": "No onions",
+      "created_at": "2026-04-19T18:56:48.518Z",
+      "updated_at": "2026-04-19T18:56:48.518Z",
+      "scheduled_at": null
+    }
+  ],
+  "total_results": 16
+}
+```
+
+## Prioritization of Orders
+
+Kitchen staff can use the KDS app to adjust an order's priority. The priority determines which orders should be filled first. The server updates the order priority and returns the order details to the client.
+
+### Endpoint
+
+`PUT /orders/{id}`
+
+### Path Parameters
+
+**id**\
+Order ID.
+
+### Request Body Parameters
+
+**priority**\
+Order priority. Valid values are 1-5 (1 is the highest priority).
+
+**name**\
+Patron's name.
+
+**table\_number**\
+Patron's table number.
+
+**dish\_ids**\
+Array of IDs for the dishes included in the order.
+
+### Sample Request
+
+```json
+curl -H "Accept: application/json" -H "Authorization: Bearer 4840de21-ed92-44d9-8571-fac25e81c209" -X PUT "{BaseURL}/orders/698d4ef070b67b7e0cc0dec9" -H "Content-Type: application/json" -d '{"name": "James", "table_number": 10, "dish_ids": ["98d4ef070b67b7e0cc0de1f"], "priority": 1}'
+```
+
+### Sample Response
+
+```json
+{
+    "id": "698d4ef070b67b7e0cc0dec9",
+    "created_at": "2026-03-16T16:06:51.160Z",
+    "updated_at": "2026-04-19T20:09:15.350Z",
+    "scheduled_at": null,
+    "table_number": 10,
+    "status": "Received",
+    "priority": 1,
+    "dish_ids": [
+        "698d4ef070b67b7e0cc0de1f"
+    ],
+    "special_requests": "no onions"
+}
+```
+
+## Initiating Preparation
+
+When ready to start an order, the kitchen staff use the KDS app to set the order status to `In Progress`. The server updates the order status and returns the order details to the client.
+
+### Endpoint
+
+`PUT /orders/{id}`
+
+### Path Parameters
+
+**id**\
+Order ID.
+
+### Request Body Parameters
+
+**status**\
+Order status. To initiate an order, set the status to `In Progress`.
+
+**priority**\
+Order priority. Valid values are 1-5 (1 is the highest priority).
+
+**name**\
+Patron's name.
+
+**table\_number**\
+Patron's table number.
+
+**dish\_ids**\
+Array of IDs for the dishes included in the order.
+
+### Sample Request
+
+```json
+curl -H "Accept: application/json" -H "Authorization: Bearer 4840de21-ed92-44d9-8571-fac25e81c209" -X PUT "{BaseURL}/orders/698d4ef070b67b7e0cc0dec9" -H "Content-Type: application/json" -d '{"name": "James", "table_number": 10, "dish_ids": ["98d4ef070b67b7e0cc0de1f"], "priority": 1, "status": "In Progress"}'
+```
+
+### Sample Response
+
+```json
+{
+    "id": "69b82a9b39c176ac1d47ace5",
+    "created_at": "2026-03-16T16:06:51.160Z",
+    "updated_at": "2026-04-19T20:24:31.998Z",
+    "scheduled_at": null,
+    "table_number": 10,
+    "status": "In Progress",
+    "priority": 1,
+    "dish_ids": [
+        "698d4ef070b67b7e0cc0de1f"
+    ],
+    "special_requests": "no onions"
+}
+```
+
+## Order Preparation by Stations
+
+Each dish in the order is assigned to a station. The kitchen staff use the KDS app to view the dishes assigned to their station.
+
+The server returns an array with a list of dishes assigned to the requested station. The client stores this information for future use.
+
+### Endpoint
+
+`GET /orders/{id}/dishes`
+
+### Path Parameters
+
+**id**\
+Order ID.
+
+### Query Parameters
+
+**filter (string)**\
+Filter the results to only view orders with assigned to a specific `station`. Valid values are `hot`, `cold`, and `beverages`.
+
+For example:\
+`filter=station.eq~hot`
+
+**fields (string)**\
+Specify the fields to return in the response. Provide a list of field names, separated by the `|` delimiter.
+
+At a minimum, the include the `image_name` and `image` fields in the response. For example:\
+`fields=name|image_name`
+
+### Sample Request
+
+```json
+curl -X GET "{BaseURL}/orders/698d4ef070b67b7e0cc0debd/dishes?filter=station.eq~hot&fields=name|image_name"
+```
+
+### Sample Response
+
+```json
+{
+  "results": [
+    {
+      "id": "698d4ef070b67b7e0cc0de55",
+      "name": "Risotto ai Funghi",
+      "image_name": "risotto_ai_funghi"
+    }
+  ],
+  "total_results": 1
+}
+```
+
+## Display Dish Ingredients
+
+Kitchen staff use the KDS app to retrieve a list of ingredients for the dish they are preparing. The server retrieves the ingredients and they are displayed on the KDS app.
+
+### Endpoint
+
+`GET /dishes/{id}/ingredients`
+
+### Path Parameters
+
+**id**\
+Dish ID.
+
+### Query Parameters
+
+**fields (string)**\
+Specify the fields to return in the response. Provide a list of field names, separated by the `|` delimiter.
+
+In this case, the only relevant field for kitchen staff is the ingredient `name`:\
+`fields=name`
+
+### Sample Request
+
+```json
+curl -X GET "{BaseURL}/dishes/698d4ef070b67b7e0cc0de1f/ingredients?fields=name"
+```
+
+### Sample Response
+
+```json
+{
+  "results": [
+    {
+      "id": "698d4ef070b67b7e0cc0ddf4",
+      "name": "Rosemary"
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0ddfc",
+      "name": "Zucchini"
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de01",
+      "name": "Tomato"
+    },
+    {
+      "id": "698d4ef070b67b7e0cc0de0f",
+      "name": "Chicken Breast"
+    }
+  ],
+  "total_results": 4
+}
+```
+
+## Ready for Assembly
+
+When a station completes a dish that is part of an order, the kitchen staff use the KDS app to change the dish status to `Ready for Assembly`. The client tracks when dishes are marked as `Ready for Assembly` by each station.
+
+## Order Assembly
+
+The expeditor assembles the dishes prepared by the stations to create the order. The expeditor then uses the KDS app to change the order status to `On the Way` (for table-side orders) or `Ready for Pickup` (for takeout orders). The server returns the order details including the updated status.
+
+### Endpoint
+
+`PUT /orders/{id}`
+
+### Path Parameters
+
+**id**\
+Order ID.
+
+### Request Body Parameter
+
+**status**\
+Order status. To mark an order as assembled and ready for the customer, set the status to `On the Way` (for table-side orders) or `Ready for Pickup` (for takeout orders).
+
+**priority**\
+Order priority. Valid values are 1-5 (1 is the highest priority).
+
+**name**\
+Patron's name.
+
+**table\_number**\
+Patron's table number
+
+**dish\_ids**\
+Array of IDs for the dishes included in the order.
+
+### Sample Request
+
+```json
+curl -H "Accept: application/json" -H "Authorization: Bearer 4840de21-ed92-44d9-8571-fac25e81c209" -X PUT "{BaseURL}/orders/698d4ef070b67b7e0cc0dec9" -H "Content-Type: application/json" -d '{"name": "James", "table_number": 10, "dish_ids": ["698d4ef070b67b7e0cc0de94", "698d4ef070b67b7e0cc0de24"], "status": "On the Way"}'
+```
+
+### Sample Response
+
+```json
+{
+    "id": "69b82a9b39c176ac1d47ace5",
+    "created_at": "2026-03-16T16:06:51.160Z",
+    "updated_at": "2026-04-19T20:24:31.998Z",
+    "scheduled_at": null,
+    "table_number": 25,
+    "status": "On the Way",
+    "priority": 1,
+    "dish_ids": [
+        "698d4ef070b67b7e0cc0de1f"
+    ],
+    "special_requests": "Easy on the sardines"
+}
+```
